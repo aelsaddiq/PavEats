@@ -173,6 +173,19 @@ def unfollow(user_id):
 
     return redirect(url_for("profile", user_id=user_id))
 
+@app.route("/delete-poll/<int:poll_id>", methods=["POST"])
+@login_required
+def delete_poll(poll_id):
+
+    poll = Poll.query.get_or_404(poll_id)
+
+    if poll.creator_id != current_user.id and current_user.role != "admin":
+        return redirect(url_for("polls"))
+
+    db.session.delete(poll)
+    db.session.commit()
+
+    return redirect(request.referrer or url_for("polls"))
 
 @app.route("/logout")
 @login_required

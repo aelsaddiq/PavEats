@@ -30,6 +30,16 @@
     </div>
 
     <h2 class="poll-title">{{ poll.question }}</h2>
+    {% if poll.creator_id == current_user.id or current_user.role == "admin" %}
+    <form method="POST"
+          action="{{ url_for('delete_poll', poll_id=poll.id) }}">
+
+        <button class="delete-poll-btn" type="submit">
+            Delete Poll
+        </button>
+
+    </form>
+{% endif %}
 
     {% set total_votes = poll.options | map(attribute='votes') | map('length') | sum %}
 
