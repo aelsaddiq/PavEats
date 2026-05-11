@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit Profile</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="text" name="name" value="{{ current_user.name }}" required>
+
+    <textarea name="bio" placeholder="Write a short bio...">{{ current_user.bio or "" }}</textarea>
+
+    <label>Profile Picture</label>
+    <input type="file" name="profile_pic" accept="image/*">
+
+    <button type="submit">Save Profile</button>
+</form>
+{% endblock %}

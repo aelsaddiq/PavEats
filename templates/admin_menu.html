@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Menu Item</h1>
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Food name" required>
+
+    <textarea name="description" placeholder="Description"></textarea>
+
+    <select name="meal_period" required>
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+    </select>
+
+    <input type="text" name="station" placeholder="Station ex: Grill, Global, Pizza">
+
+    <input type="date" name="date" required>
+
+    <button type="submit">Add Menu Item</button>
+</form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>PavEats</h1>
+    <p>See what UC Merced students really think about Pavilion food.</p>
+    <p>Post reviews, check the menu, and vote on what should come next.</p>
+
+    <a class="btn" href="{{ url_for('signup') }}">Get Started</a>
+</div>
+{% endblock %}

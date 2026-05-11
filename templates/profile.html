@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="profile-card">
+
+    {% if user.profile_pic %}
+        <img class="profile-pic"
+             src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}"
+             alt="Profile picture">
+    {% else %}
+        <div class="profile-avatar">
+            {{ user.name[0].upper() }}
+        </div>
+    {% endif %}
+
+    <h1>{{ user.name }}</h1>
+
+    {% if user.bio %}
+        <p>{{ user.bio }}</p>
+    {% else %}
+        <p>No bio yet.</p>
+    {% endif %}
+
+    <div class="profile-stats">
+        <span><strong>{{ total_posts }}</strong> Posts</span>
+        <a class="profile-stat-link" href="{{ url_for('user_polls', user_id=user.id) }}">
+    <strong>{{ total_polls }}</strong> Polls
+</a>
+        <span><strong>{{ follower_count }}</strong> Followers</span>
+        <span><strong>{{ following_count }}</strong> Following</span>
+        {% if user.id == current_user.id %}
+    <a class="profile-stat-link" href="{{ url_for('saved') }}">
+        <strong>{{ saved_count }}</strong> Saved
+    </a>
+{% else %}
+    <span><strong>{{ saved_count }}</strong> Saved</span>
+{% endif %}
+    </div>
+
+    {% if user.id == current_user.id %}
+        <a class="btn"
+           href="{{ url_for('edit_profile') }}">
+           Edit Profile
+        </a>
+    {% endif %}
+    
+    {% if user.id != current_user.id %}
+
+    {% set is_following = false %}
+
+    {% for follow in current_user.following %}
+        {% if follow.following_id == user.id %}
+            {% set is_following = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if is_following %}
+
+        <form method="POST"
+              action="{{ url_for('unfollow', user_id=user.id) }}">
+
+            <button class="btn" type="submit">
+                Unfollow
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <form method="POST" action="{{ url_for('toggle_follow', user_id=user.id) }}">
+
+            <button class="btn" type="submit">
+                Follow
+            </button>
+
+        </form>
+
+    {% endif %}
+
+{% endif %}
+</div>
+
+<div class="profile-content-grid">
+
+    <!-- LEFT SIDE = POSTS -->
+    <div>
+
+        <h2>{{ user.name }}'s Posts</h2>
+
+        {% for post in posts %}
+<div class="insta-post">
+
+    <div class="post-header">
+
+        {% if post.user.profile_pic %}
+            <img class="feed-profile-pic"
+                 src="{{ url_for('static', filename='uploads/' + post.user.profile_pic) }}"
+                 alt="Profile picture">
+        {% else %}
+            <div class="avatar">
+                {{ post.user.name[0].upper() }}
+            </div>
+        {% endif %}
+
+        <div>
+            <a class="profile-link"
+               href="{{ url_for('profile', user_id=post.user.id) }}">
+                <strong>{{ post.user.name }}</strong>
+            </a>
+
+            <p>
+                {{ post.meal_period.title() }}
+                •
+                {{ post.created_at.strftime('%b %d, %Y') }}
+            </p>
+        </div>
+
+    </div>
+
+    {% if post.media %}
+        <div class="media-carousel">
+
+            {% for media in post.media %}
+                <div class="media-slide">
+
+                    {% if media.media_type == "image" %}
+                        <img class="insta-img"
+                             src="{{ url_for('static', filename='uploads/' + media.filename) }}"
+                             alt="Post media">
+
+                    {% elif media.media_type == "video" %}
+                        <video class="insta-video"
+                               autoplay
+                               muted
+                               loop
+                               playsinline
+                               controls>
+                            <source src="{{ url_for('static', filename='uploads/' + media.filename) }}">
+                        </video>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+    <div class="post-body">
+
+        <h3>{{ post.food_name }}</h3>
+
+        <p class="rating">
+            ⭐ {{ post.rating }}/5
+        </p>
+
+        <p>{{ post.review_text }}</p>
+
+        {% if post.post_type == "creation" %}
+            <span class="tag">Creation</span>
+        {% else %}
+            <span class="tag">Review</span>
+        {% endif %}
+{% if user.id == current_user.id or current_user.role == "admin" %}
+    <div class="post-actions">
+
+        <a class="edit-btn"
+           href="{{ url_for('edit_post', post_id=post.id) }}">
+            Edit
+        </a>
+
+        <form method="POST"
+              action="{{ url_for('delete_post', post_id=post.id) }}">
+
+            <button class="delete-btn" type="submit">
+                Delete
+            </button>
+
+        </form>
+
+    </div>
+{% endif %}
+        <div class="post-social-row">
+            <form method="POST"
+                  action="{{ url_for('like_post', post_id=post.id) }}">
+                <button class="icon-action-btn" type="submit">♡</button>
+            </form>
+
+            <button class="icon-action-btn"
+        type="button"
+        onclick="toggleComments(this)">
+
+    💬
+
+</button>
+<form method="POST" action="{{ url_for('save_post', post_id=post.id) }}">
+    <button class="bookmark-btn" type="submit">🔖</button>
+</form>
+<button class="share-btn"
+        onclick="sharePost(`{{ url_for('profile', user_id=post.user.id, _external=True) }}`)">
+
+    ↗
+
+</button>
+            <span class="social-count">{{ post.likes|length }} likes</span>
+            <span class="social-count">{{ post.comments|length }} comments</span>
+        </div>
+
+        <div class="comments hidden-comments">
+            <h4>Comments</h4>
+
+            {% for comment in post.comments %}
+    <div class="comment-row">
+        <p>
+            <strong>{{ comment.user.name }}:</strong>
+            {{ comment.text }}
+        </p>
+
+        {% if comment.user_id == current_user.id or current_user.role == "admin" %}
+            <form method="POST"
+                  action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                <button class="comment-delete-btn" type="submit">🗑</button>
+            </form>
+        {% endif %}
+    </div>
+{% endfor %}
+
+            <form method="POST"
+                  action="{{ url_for('comment_post', post_id=post.id) }}">
+                <input type="text"
+                       name="comment_text"
+                       placeholder="Add a comment..."
+                       required>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% else %}
+<p>No posts yet.</p>
+{% endfor %}
+
+
+    </div>
+
+    <!-- RIGHT SIDE = POLLS -->
+    <div>
+
+        <h2>{{ user.name }}'s Polls</h2>
+
+        {% for poll in polls %}
+
+        <div class="insta-post">
+
+            <div class="post-body">
+
+                <h3>{{ poll.question }}</h3>
+
+                {% if poll.description %}
+                    <p>{{ poll.description }}</p>
+                {% endif %}
+
+                <small>
+                    {{ poll.options|length }} options
+                </small>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+            <p>No food votes created yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

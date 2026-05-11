@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Post a Pavilion Review</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="text" name="food_name" placeholder="Food name" required>
+
+    <select name="meal_period">
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+    </select>
+    <select name="post_type">
+    <option value="review">Food Review</option>
+    <option value="creation">My Creation</option>
+</select>
+
+    <input type="number" name="rating" min="1" max="5" placeholder="Rating (1-5)" required>
+
+    <textarea name="review_text" placeholder="Write your review or explain your creation..." required></textarea>
+    <input type="file" name="media" accept="image/*,video/*" multiple>
+    <button type="submit">Post Review</button>
+</form>
+{% endblock %}

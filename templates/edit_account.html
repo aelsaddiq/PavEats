@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Edit Account</h1>
+
+<form method="POST">
+
+    <label>Email</label>
+
+    <input type="email"
+           name="email"
+           value="{{ current_user.email }}"
+           required>
+
+    <label>New Password</label>
+
+    <input type="password"
+           name="password"
+           placeholder="Leave blank to keep current password">
+
+    <button type="submit">
+        Save Changes
+    </button>
+
+</form>
+
+{% endblock %}

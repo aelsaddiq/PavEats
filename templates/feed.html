@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ page_title if page_title else "PavEats Feed" }}</h1>
+<p>Welcome back, {{ current_user.name }}</p>
+
+<a class="btn" href="{{ url_for('create_post') }}">+ New Post</a>
+
+<hr>
+
+{% for post in posts %}
+<div class="insta-post">
+
+    <div class="post-header">
+
+        {% if post.user.profile_pic %}
+            <img class="feed-profile-pic"
+                 src="{{ url_for('static', filename='uploads/' + post.user.profile_pic) }}"
+                 alt="Profile picture">
+        {% else %}
+            <div class="avatar">
+                {{ post.user.name[0].upper() }}
+            </div>
+        {% endif %}
+
+        <div>
+            <a class="profile-link"
+               href="{{ url_for('profile', user_id=post.user.id) }}">
+                <strong>{{ post.user.name }}</strong>
+            </a>
+
+            <p>
+                {{ post.meal_period.title() }}
+                •
+                {{ post.created_at.strftime('%b %d, %Y') }}
+            </p>
+        </div>
+
+    </div>
+
+    {% if post.media %}
+        <div class="media-carousel">
+
+            {% for media in post.media %}
+                <div class="media-slide">
+
+                    {% if media.media_type == "image" %}
+                        <img class="insta-img"
+                             src="{{ url_for('static', filename='uploads/' + media.filename) }}"
+                             alt="Post media">
+
+                    {% elif media.media_type == "video" %}
+                        <video class="insta-video"
+                               autoplay
+                               muted
+                               loop
+                               playsinline
+                               controls>
+                            <source src="{{ url_for('static', filename='uploads/' + media.filename) }}">
+                        </video>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+    <div class="post-body">
+
+        <h3>{{ post.food_name }}</h3>
+
+        <p class="rating">
+            ⭐ {{ post.rating }}/5
+        </p>
+
+        <p>{{ post.review_text }}</p>
+
+        {% if post.post_type == "creation" %}
+            <span class="tag">Creation</span>
+        {% else %}
+            <span class="tag">Review</span>
+        {% endif %}
+
+        <div class="post-social-row">
+            <form method="POST"
+                  action="{{ url_for('like_post', post_id=post.id) }}">
+                <button class="icon-action-btn" type="submit">♡</button>
+            </form>
+
+            <button class="icon-action-btn"
+        type="button"
+        onclick="toggleComments(this)">
+
+    💬
+
+</button>
+<form method="POST" action="{{ url_for('save_post', post_id=post.id) }}">
+    <button class="bookmark-btn" type="submit">🔖</button>
+</form>
+<button class="share-btn"
+        onclick="sharePost(`{{ url_for('profile', user_id=post.user.id, _external=True) }}`)">
+
+    ↗
+
+</button>
+            <span class="social-count">{{ post.likes|length }} likes</span>
+            <span class="social-count">{{ post.comments|length }} comments</span>
+        </div>
+
+        <div class="comments hidden-comments">
+            <h4>Comments</h4>
+
+            {% for comment in post.comments %}
+    <div class="comment-row">
+        <p>
+            <strong>{{ comment.user.name }}:</strong>
+            {{ comment.text }}
+        </p>
+
+        {% if comment.user_id == current_user.id or current_user.role == "admin" %}
+            <form method="POST"
+                  action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                <button class="comment-delete-btn" type="submit">🗑</button>
+            </form>
+        {% endif %}
+    </div>
+{% endfor %}
+
+            <form method="POST"
+                  action="{{ url_for('comment_post', post_id=post.id) }}">
+                <input type="text"
+                       name="comment_text"
+                       placeholder="Add a comment..."
+                       required>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% else %}
+<p>No posts yet.</p>
+{% endfor %}
+
+{% endblock %}

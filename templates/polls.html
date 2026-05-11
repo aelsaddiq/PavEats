@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ page_title if page_title else "Polls" }}</h1>
+
+<a class="btn" href="{{ url_for('create_poll') }}">
+    + Suggest Food
+</a>
+
+<hr>
+
+{% for poll in polls %}
+<div class="poll-card">
+
+    <div class="poll-header">
+        {% if poll.creator.profile_pic %}
+            <img class="poll-profile-pic"
+                 src="{{ url_for('static', filename='uploads/' + poll.creator.profile_pic) }}"
+                 alt="Profile picture">
+        {% else %}
+            <div class="avatar small-avatar">
+                {{ poll.creator.name[0].upper() }}
+            </div>
+        {% endif %}
+
+        <a class="profile-link"
+           href="{{ url_for('profile', user_id=poll.creator.id) }}">
+            <strong>{{ poll.creator.name }}</strong>
+        </a>
+    </div>
+
+    <h2 class="poll-title">{{ poll.question }}</h2>
+
+    {% set total_votes = poll.options | map(attribute='votes') | map('length') | sum %}
+
+    {% set existing_vote = user_votes[poll.id] %}
+
+    <form method="POST" action="{{ url_for('vote', poll_id=poll.id) }}">
+
+        {% for option in poll.options %}
+            {% set vote_count = option.votes|length %}
+
+            {% if total_votes > 0 %}
+                {% set percentage = (vote_count / total_votes * 100) | round(0) %}
+            {% else %}
+                {% set percentage = 0 %}
+            {% endif %}
+
+            <div class="vote-option">
+                <label>
+                    <input type="radio" name="option_id" value="{{ option.id }}" required>
+                    {{ option.text }}
+                </label>
+
+                <div class="vote-bar-bg">
+                    <div class="vote-bar-fill" data-percent="{{ percentage }}"></div>
+                </div>
+
+                <small>{{ vote_count }} votes • {{ percentage }}%</small>
+            </div>
+        {% endfor %}
+
+        <button type="submit">Vote</button>
+</form>
+
+{% if existing_vote %}
+    <form method="POST"
+          action="{{ url_for('clear_vote', poll_id=poll.id) }}">
+
+        <button class="clear-vote-btn" type="submit">
+            Clear Vote
+        </button>
+
+    </form>
+{% endif %}
+
+</div>
+{% else %}
+<p>No polls yet.</p>
+{% endfor %}
+
+<script>
+    document.querySelectorAll(".vote-bar-fill").forEach(function(bar) {
+        bar.style.width = bar.dataset.percent + "%";
+    });
+</script>
+
+{% endblock %}

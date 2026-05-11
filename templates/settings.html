@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Settings</h1>
+
+<div class="settings-grid">
+
+    <div class="settings-card">
+        <h2>Account</h2>
+
+        <a class="settings-link"
+           href="{{ url_for('edit_profile') }}">
+           Edit Profile
+        </a>
+        <a class="settings-link"
+        href="{{ url_for('edit_account') }}">
+        Edit Account
+        </a>
+        <a class="settings-link"
+           href="{{ url_for('logout') }}">
+           Logout
+        </a>
+    </div>
+
+    <div class="settings-card">
+        <h2>Appearance</h2>
+
+        <button class="settings-btn"
+        onclick="toggleDarkMode()">
+        Toggle Dark Mode
+        </button>
+    </div>
+
+    <div class="settings-card">
+        <h2>Feed Preferences</h2>
+
+        <label>
+            <input type="checkbox">
+            Show Creation Posts
+        </label>
+
+        <label>
+            <input type="checkbox">
+            Autoplay Videos
+        </label>
+    </div>
+
+</div>
+
+{% endblock %}

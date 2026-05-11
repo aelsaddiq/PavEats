@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>PavEats Menu</h1>
+
+<div class="menu-grid">
+
+    <div class="official-menu-box">
+        <h2 class="menu-title">Pavilion Menu</h2>
+        <iframe 
+            src="https://uc-merced-the-pavilion.widget.eagle.bigzpoon.com/menus?location_no=12443"
+            width="100%"
+            height="800"
+            style="border: none; border-radius: 14px;">
+        </iframe>
+    </div>
+
+    <div class="official-menu-box">
+        <h2 class="menu-title">Yablokoff Wallace Dining Center Menu</h2>
+        <iframe 
+            src="https://uc-merced-the-pavilion.widget.eagle.bigzpoon.com/menus?location_no=12462"
+            width="100%"
+            height="800"
+            style="border: none; border-radius: 14px;">
+        </iframe>
+    </div>
+
+</div>
+{% endblock %}

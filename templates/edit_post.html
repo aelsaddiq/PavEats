@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit Review</h1>
+
+<form method="POST">
+    <input type="text" name="food_name" value="{{ post.food_name }}" required>
+
+    <select name="meal_period">
+        <option value="breakfast" {% if post.meal_period == "breakfast" %}selected{% endif %}>Breakfast</option>
+        <option value="lunch" {% if post.meal_period == "lunch" %}selected{% endif %}>Lunch</option>
+        <option value="dinner" {% if post.meal_period == "dinner" %}selected{% endif %}>Dinner</option>
+    </select>
+
+    <input type="number" name="rating" min="1" max="5" value="{{ post.rating }}" required>
+
+    <textarea name="review_text" required>{{ post.review_text }}</textarea>
+
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}
