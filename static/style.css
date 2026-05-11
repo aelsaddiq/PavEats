@@ -737,3 +737,62 @@ textarea, select {
 .clear-vote-btn:hover {
     background: #d1d5db;
 }
+
+body {
+    font-family: Gabarito, sans-serif;
+}
+
+.home-hero {
+    min-height: 80vh;
+    background-image: url("/static/resources/ucm_dining_2020_db_047_jpg.jpg");
+    background-size: cover;
+    background-position: center;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.home-card {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(6px);
+    border-radius: 24px;
+    padding: 70px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.home-card h1 {
+    font-size: 64px;
+    color: #002856;
+    margin: 0 0 15px;
+}
+
+.home-card h1 span {
+    color: #FDB515;
+}
+
+.home-card p {
+    font-size: 18px;
+    margin: 8px 0;
+}
+
+.home-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+@media (max-width: 800px) {
+    .home-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px;
+    }
+}
