@@ -4,6 +4,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Post, Like, Comment, MenuItem, Poll, PollOption, Vote, PostMedia, Follow, SavedPost
 import os
+import cloudinary.uploader
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
@@ -111,7 +112,13 @@ def create_post():
                 filename = secure_filename(file.filename)
                 saved_filename = f"{current_user.id}_{new_post.id}_{filename}"
 
-                file.save(os.path.join(app.config["UPLOAD_FOLDER"], saved_filename))
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    resource_type="auto",
+                    folder="paveats"
+                )
+
+                saved_filename = upload_result["secure_url"]
 
                 extension = filename.rsplit(".", 1)[1].lower()
 

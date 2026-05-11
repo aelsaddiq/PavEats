@@ -126,7 +126,7 @@
 
                     {% if media.media_type == "image" %}
                         <img class="insta-img"
-                             src="{{ url_for('static', filename='uploads/' + media.filename) }}"
+                             src="{{ media.filename }}"
                              alt="Post media">
 
                     {% elif media.media_type == "video" %}
@@ -136,7 +136,7 @@
                                loop
                                playsinline
                                controls>
-                            <source src="{{ url_for('static', filename='uploads/' + media.filename) }}">
+                            <source src="{{ media.filename }}">
                         </video>
                     {% endif %}
 
