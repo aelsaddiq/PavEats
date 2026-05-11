@@ -3,3 +3,4 @@ __pycache__/
 instance/app.db
 *.pyc
 .DS_Store
+migrations/__pycache__/
