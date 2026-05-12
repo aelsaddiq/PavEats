@@ -14,9 +14,9 @@
 
     <div class="poll-header">
         {% if poll.creator.profile_pic %}
-            <img class="poll-profile-pic"
-                 src="{{ url_for('static', filename='uploads/' + poll.creator.profile_pic) }}"
-                 alt="Profile picture">
+    <img class="poll-profile-pic"
+         src="{{ poll.creator.profile_pic }}"
+         alt="Profile picture">
         {% else %}
             <div class="avatar small-avatar">
                 {{ poll.creator.name[0].upper() }}
