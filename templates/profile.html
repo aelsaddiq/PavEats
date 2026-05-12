@@ -6,7 +6,7 @@
 
     {% if user.profile_pic %}
         <img class="profile-pic"
-             src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}"
+            src="{{ user.profile_pic }}"
              alt="Profile picture">
     {% else %}
         <div class="profile-avatar">

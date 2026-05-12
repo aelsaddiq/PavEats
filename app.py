@@ -484,10 +484,12 @@ def edit_profile():
         image = request.files.get("profile_pic")
 
         if image and image.filename != "" and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            saved_filename = f"profile_{current_user.id}_{filename}"
-            image.save(os.path.join(app.config["UPLOAD_FOLDER"], saved_filename))
-            current_user.profile_pic = saved_filename
+            upload_result = cloudinary.uploader.upload(
+            image,
+            resource_type="image",
+            folder="paveats/profile_pics"
+            )
+            current_user.profile_pic = upload_result["secure_url"]
 
         db.session.commit()
         return redirect(url_for("profile", user_id=current_user.id))
