@@ -15,8 +15,8 @@
 
         {% if post.user.profile_pic %}
             <img class="feed-profile-pic"
-                 src="{{ url_for('static', filename='uploads/' + post.user.profile_pic) }}"
-                 alt="Profile picture">
+     src="{{ post.user.profile_pic }}"
+     alt="Profile picture">
         {% else %}
             <div class="avatar">
                 {{ post.user.name[0].upper() }}
